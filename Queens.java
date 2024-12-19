@@ -13,6 +13,7 @@ public class Queens {
         // variables
         int[][] board = new int[n][n];
         int[][] ans = new int[n][n];
+        int[] color_mask = new int[n];
 
         System.out.println("Enter the Game board: ");
         // taking input from user
@@ -22,12 +23,12 @@ public class Queens {
             }
         }
 
-        // print the board - for confirmation
-        System.out.println();
-        print(board, n);
+        // // print the board - for confirmation
+        // System.out.println();
+        // print(board, n);
 
         // calling the function
-        queens(board, ans, 0, n);
+        queens(board, ans, color_mask, 0, n);
 
         // print the ans board
         System.out.println();
@@ -36,7 +37,7 @@ public class Queens {
         
     }
 
-    static boolean queens(int[][] board, int[][] ans, int row, int n){
+    static boolean queens(int[][] board, int[][] ans, int[] color_mask, int row, int n){
 
         // base class
         if (row == n){
@@ -46,22 +47,24 @@ public class Queens {
         // work
         for (int i = 0; i < n; i++){
 
-            if (is_place(board, ans, row, i, n)){
+            if (is_place(board, ans, color_mask, row, i, n)){
                 ans[row][i] = 1; // update value
+                color_mask[board[row][i]] = 1;
 
                 // if found a solution
-                if (queens(board, ans, row + 1, n)){
+                if (queens(board, ans, color_mask, row + 1, n)){
                     return true;
                 }
 
                 ans[row][i] = 0; // backtrack
+                color_mask[board[row][i]] = 0;
             }
         }
 
         return false;
     }
 
-    static boolean is_place(int[][] board, int[][] ans, int row, int col, int n){
+    static boolean is_place(int[][] board, int[][] ans, int[] color_mask, int row, int col, int n){
 
         // check column
         for(int i = 0; i < n; i++){
@@ -81,7 +84,9 @@ public class Queens {
         }
 
         // check color blocks
-        
+        if (color_mask[board[row][col]] == 1){
+            return false;
+        }
 
 
         return true; // default value
